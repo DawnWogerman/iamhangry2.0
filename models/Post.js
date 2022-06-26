@@ -2,7 +2,30 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
 //create post model
-class Post extends Model {}
+class Post extends Model {
+    static lit(body, models) {
+      return models.VerifiedDrunk.create({
+        user_id: body.user_id,
+        post_id: body.post_id
+      }).then(() => {
+        return Post.findOne({
+          where: {
+            id: body.post_id
+          },
+          attributes: [
+            'id',
+            'num_of_drinks',
+            'location',
+            'created_at',
+            [
+              sequelize.literal('(SELECT COUNT(*) FROM verifieddrunk WHERE post.id = verifieddrunk.post_id)'),
+              'vote_count'
+            ]
+          ]
+        });
+      });
+    }
+  }
 
 //create fields for post
 Post.init (
