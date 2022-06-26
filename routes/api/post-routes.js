@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connection');
-const { Post, User, VerifiedDrunk } = require('../../models');
+const { Post, User, VerifiedDrunk, Review } = require('../../models');
 
 //get all users
 router.get('/', (req, res) => {
@@ -11,6 +11,14 @@ router.get('/', (req, res) => {
  ],
         order: [['created_at', 'DESC']],
         include: [
+            {
+              model: Review,
+              attributes: ['id', 'review_text', 'post_id', 'user_id', 'created_at'],
+              include: {
+                model: User,
+                attributes: ['username']
+              }
+            },
             {
                 model: User,
                 attributes: ['username']
@@ -25,37 +33,57 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-    Post.findOne({
-      where: {
-        id: req.params.id
-      },
-      attributes: [
-        'id',
-        'num_of_drinks',
-        'location',
-        'created_at',
-        [sequelize.literal('(SELECT COUNT(*) FROM verifieddrunk WHERE post.id = verifieddrunk.post_id)'), 'vote_count']
-      ],
-      include: [
-        {
+  Post.findOne({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id',
+      'num_of_drinks',
+      'location',
+      'created_at',
+      [sequelize.literal('(SELECT COUNT(*) FROM verifieddrunk WHERE post.id = verifieddrunk.post_id)'), 'vote_count']
+    ],
+    include: [
+      {
+        model: Review,
+        attributes: ['id', 'review_text', 'post_id', 'user_id', 'created_at'],
+        include: {
           model: User,
           attributes: ['username']
         }
-      ]
+      },
+      {
+        model: User,
+        attributes: ['username']
+      }
+    ]
+  })
+    .then(dbPostData => {
+      if (!dbPostData) {
+        res.status(404).json({ message: 'No post found with this id' });
+        return;
+      }
+      res.json(dbPostData);
     })
-      .then(dbPostData => {
-        if (!dbPostData) {
-          res.status(404).json({ message: 'No post found with this id' });
-          return;
-        }
-        res.json(dbPostData);
-      })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+});
+  router.post('/', (req, res) => {
+    // expects {title: 'Taskmaster goes public!', post_url: 'https://taskmaster.com/press', user_id: 1}
+    Post.create({
+      location: req.body.location,
+      num_of_drinks: req.body.num_of_drinks,
+      user_id: req.body.user_id
+    })
+      .then(dbPostData => res.json(dbPostData))
       .catch(err => {
         console.log(err);
         res.status(500).json(err);
       });
   });
-
 // /api/post/lit - Create verified drunk vote
 router.put('/lit', (req, res ) => {
     // custom static method created in models/Post.js
