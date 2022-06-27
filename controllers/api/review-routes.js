@@ -12,19 +12,21 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    
-    Review.create({
-      review_text: req.body.review_text,
-      user_id: req.body.user_id,
-      post_id: req.body.post_id
-    })
-      .then(dbPostData => res.json(dbPostData))
-      .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+    // check the session
+    if (req.session) {
+      Review.create({
+        review_text: req.body.review_text,
+        post_id: req.body.post_id,
+        // use the id from the session
+        user_id: req.session.user_id
+      })
+        .then(dbReviewData => res.json(dbReviewData))
+        .catch(err => {
+          console.log(err);
+          res.status(400).json(err);
+        });
+    }
   });
-
 router.delete('/:id', (req, res) => {
     Review.destroy({
         where: {

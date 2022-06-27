@@ -10,14 +10,14 @@
   </div>
 </article>
 
-<form class="comment-form">
+<form class="review-form">
   <div>
-    <textarea name="comment-body"></textarea>
+    <textarea name="review-body"></textarea>
   </div>
 
   <div>
-    <button type="submit">add comment</button>
-    <button type="button" class="upvote-btn">upvote</button>
+    <button type="submit">Add Review</button>
+    <button type="button" class="lit-btn">Lit</button>
   </div>
 </form>
 
@@ -33,3 +33,7 @@
   </section>
   {{/each}}
 </div>
+{{!-- {{#if loggedIn}} --}}
+<script src = "/javascript/review.js"></script>
+<script src = "/javascript/lit.js"></script>
+{{!-- {{/if}} --}}

@@ -86,13 +86,16 @@ router.get('/:id', (req, res) => {
   });
 // /api/post/lit - Create verified drunk vote
 router.put('/lit', (req, res ) => {
-    // custom static method created in models/Post.js
-  Post.lit(req.body, { VerifiedDrunk })
-  .then(updatedPostData => res.json(updatedPostData))
-  .catch(err => {
-    console.log(err);
-    res.status(400).json(err);
-  });
+  // make sure the session exists first
+  if (req.session) {
+    // pass session id along with all destructured properties on req.body
+    Post.lit({ ...req.body, user_id: req.session.user_id }, { VerifiedDrunk, Review, User })
+      .then(updatedLitData => res.json(updatedLitData))
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  }
 });
 //update number of drinks
 router.put('/:id', (req, res)=>{
