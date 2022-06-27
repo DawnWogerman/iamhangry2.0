@@ -1,5 +1,3 @@
-
-
 async function litClickHandler(event) {
     event.preventDefault();
 
@@ -24,4 +22,4 @@ async function litClickHandler(event) {
    }
 }
 
-// document.querySelector('lit-btn').addEventListener('click', litClickHandler);
+document.querySelector('lit-btn').addEventListener('click', litClickHandler);

@@ -9,7 +9,7 @@
     <a href="/post/{{post.id}}">{{post.review.length}} reviews(s)</a>
   </div>
 </article>
-
+{{#if loggedIn}}
 <form class="review-form">
   <div>
     <textarea name="review-body"></textarea>
@@ -20,7 +20,7 @@
     <button type="button" class="lit-btn">Lit</button>
   </div>
 </form>
-
+{{/if}}
 <div class="reviews">
   {{#each post.reviews}}
   <section class="review">
@@ -33,7 +33,7 @@
   </section>
   {{/each}}
 </div>
-{{!-- {{#if loggedIn}} --}}
+{{#if loggedIn}}
 <script src = "/javascript/review.js"></script>
 <script src = "/javascript/lit.js"></script>
-{{!-- {{/if}} --}}
+{{/if}}
