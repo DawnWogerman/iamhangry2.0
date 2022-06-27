@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connection');
 const { Post, User, VerifiedDrunk, Review } = require('../../models');
+const withAuth = require('../../utils/auth');
 
 //get all users
 router.get('/', (req, res) => {
@@ -71,12 +72,12 @@ router.get('/:id', (req, res) => {
       res.status(500).json(err);
     });
 });
-  router.post('/', (req, res) => {
+  router.post('/', withAuth, (req, res) => {
     // expects {title: 'Taskmaster goes public!', post_url: 'https://taskmaster.com/press', user_id: 1}
     Post.create({
       location: req.body.location,
       num_of_drinks: req.body.num_of_drinks,
-      user_id: req.body.user_id
+      user_id: req.session.user_id
     })
       .then(dbPostData => res.json(dbPostData))
       .catch(err => {
@@ -85,7 +86,7 @@ router.get('/:id', (req, res) => {
       });
   });
 // /api/post/lit - Create verified drunk vote
-router.put('/lit', (req, res ) => {
+router.put('/lit', withAuth, (req, res ) => {
   // make sure the session exists first
   if (req.session) {
     // pass session id along with all destructured properties on req.body
@@ -121,7 +122,7 @@ router.put('/:id', (req, res)=>{
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
     Post.destroy({
       where: {
         id: req.params.id
@@ -129,7 +130,7 @@ router.delete('/:id', (req, res) => {
     })
       .then(dbPostData => {
         if (!dbPostData) {
-          res.status(404).json({ message: 'No post found with this id' });
+          res.status(404).json({ message: 'No check-in found with this id' });
           return;
         }
         res.json(dbPostData);

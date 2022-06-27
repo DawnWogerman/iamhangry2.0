@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Review } = require('../../models');
+const withAuth = require('../../utils/auth');
 
 router.get('/', (req, res) => {
     Review.findAll()
@@ -11,7 +12,7 @@ router.get('/', (req, res) => {
 
 });
 
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
     // check the session
     if (req.session) {
       Review.create({
@@ -27,7 +28,7 @@ router.post('/', (req, res) => {
         });
     }
   });
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
     Review.destroy({
         where: {
             id: req.params.id

@@ -1,0 +1,31 @@
+<section>
+  <h2>Find Restaurant</h2>
+
+  <form class="new-post-form">
+    <div>
+      <label for="post-location">Location</label>
+      <input type="text" id="post-location" name="post-location" />
+    </div>
+    <div>
+      <label for="post-num_of_drinks">Number of Drinks</label>
+      <input id="post-num_of_drinks" name="post-num_of_drinks" />
+    </div>
+    <button type="submit" class="btn">Find Restaurants</button>
+  </form>
+</section>
+
+{{#if posts.length}}
+<section>
+  <h2>Your Recent Locations</h2>
+  <ol>
+    {{#each posts as |post|}}
+    <li>
+      {{> post-info post}}
+      <a href="/dashboard/edit/{{post.id}}" class="edit-link">Edit post</a>
+    </li>
+    {{/each}}
+  </ol>
+</section>
+{{/if}}
+
+<script src="/javascript/add-post.js"></script>
