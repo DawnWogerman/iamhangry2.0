@@ -1,22 +1,7 @@
 <ol class="post-list">
-    {{#each posts as |post|}}
-
+  {{#each posts as |post|}}
   <li>
-    <article class="post">
-      <div class="location">
-        <div>
-           {{user.username}} was in {{location}} on drink number {{num_of_drinks}}
-        </div>
-        {{!-- <a href="{{post_url}}" target="_blank">{{title}}</a>
-        <span>({{post_url}})</span> --}}
-      </div>
-      <div class="meta">
-        {{vote_count}} point(s) by {{user.username}}  on
-        {{created_at}}
-        |
-        <a href="/post/{{id}}">{{reviews.length}} review(s)</a>
-      </div>
-    </article>
+    {{> post-info post }}
   </li>
   {{/each}}
 </ol>
